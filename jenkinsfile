@@ -31,7 +31,7 @@ pipeline {
 
         stage("Build Application") {
             steps {
-                // 🔹 changed from "mvn clean compile" to "mvn clean package"
+                // Build the JAR so Docker can pick it up
                 sh "mvn clean package -DskipTests"
             }
         }
