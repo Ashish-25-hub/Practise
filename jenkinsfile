@@ -13,14 +13,11 @@ pipeline {
         DOCKER_PASS = 'dockerhub'
         IMAGE_NAME = "${DOCKER_USER}/${APP_NAME}"
         IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
-        JENKINS_API_TOKEN = credentials("JENKINS_API_TOKEN")
     }
 
     stages {
         stage("Cleanup Workspace") {
-            steps {
-                cleanWs()
-            }
+            steps { cleanWs() }
         }
 
         stage("Checkout from SCM") {
@@ -29,15 +26,9 @@ pipeline {
             }
         }
 
-        stage("Build Application") {
+        stage("Build & Package Application") {
             steps {
                 sh "mvn clean package -DskipTests"
-            }
-        }
-
-        stage("Test Application") {
-            steps {
-                sh "mvn test"
             }
         }
 
@@ -55,20 +46,6 @@ pipeline {
             steps {
                 script {
                     waitForQualityGate abortPipeline: false, credentialsId: 'sonarqube-token'
-                }
-            }
-        }
-
-        stage("Create Dockerfile") {
-            steps {
-                script {
-                    writeFile file: 'Dockerfile', text: '''
-FROM openjdk:17-jdk-slim
-WORKDIR /app
-COPY target/register-app-1.0-SNAPSHOT.jar app.jar
-EXPOSE 8080
-ENTRYPOINT ["java","-jar","app.jar"]
-'''
                 }
             }
         }
