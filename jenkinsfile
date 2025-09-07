@@ -9,8 +9,8 @@ pipeline {
     environment {
         APP_NAME = "register-app-pipeline"
         RELEASE = "1.0.0"
-        DOCKER_USER = "awasare25"
-        DOCKER_PASS = 'ihtwh@6723@A'
+        DOCKER_USER = "ashfaque9x"
+        DOCKER_PASS = 'dockerhub'
         IMAGE_NAME = "${DOCKER_USER}/${APP_NAME}"
         IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
         JENKINS_API_TOKEN = credentials("JENKINS_API_TOKEN")
@@ -31,7 +31,6 @@ pipeline {
 
         stage("Build Application") {
             steps {
-                // Build the JAR so Docker can pick it up
                 sh "mvn clean package -DskipTests"
             }
         }
@@ -64,12 +63,12 @@ pipeline {
             steps {
                 script {
                     writeFile file: 'Dockerfile', text: '''
-                    FROM openjdk:17-jdk-slim
-                    WORKDIR /app
-                    COPY target/register-app-1.0-SNAPSHOT.jar app.jar
-                    EXPOSE 8080
-                    ENTRYPOINT ["java","-jar","app.jar"]
-                    '''
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+COPY target/register-app-1.0-SNAPSHOT.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java","-jar","app.jar"]
+'''
                 }
             }
         }
