@@ -31,6 +31,7 @@ pipeline {
 
         stage("Build Application") {
             steps {
+                // 🔹 changed from "mvn clean compile" to "mvn clean package"
                 sh "mvn clean package -DskipTests"
             }
         }
